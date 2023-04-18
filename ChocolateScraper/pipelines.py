@@ -7,6 +7,7 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
+import psycopg2
 
 class ChocolatescraperPipeline:
     def process_item(self, item, spider):
@@ -38,3 +39,25 @@ class DuplicatesPipeline:
             self.name_seen.add(adapter['name'])
             return item
     
+class SavingToPostgreSQLPipeline():
+    def __init__(self):
+        self.create_connection()
+
+    def create_connection(self):
+        self.connection = psycopg2.connect(
+            host="db.vruwmdtksafafixuegxc.supabase.co",
+            database="postgres",
+            user="postgres",
+            password="vay9drh*vqn8fwg3AEZ")
+        self.curr = self.connection.cursor()
+
+    def process_item(self, item, spider):
+        self.store_item(item)
+        return item
+    
+    def store_item(self, item):
+        try:
+            self.curr.execute("""INSERT INTO "CHOCOLATE" VALUES ('{}', {}, '{}')""".format(item['name'], item['price'], item['url']))
+        except BaseException as e:
+            print(e)
+        self.connection.commit()

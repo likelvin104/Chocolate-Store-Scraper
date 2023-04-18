@@ -65,6 +65,7 @@ ROBOTSTXT_OBEY = True
 ITEM_PIPELINES = {
     "ChocolateScraper.pipelines.PriceToUSDPipeline": 100,
     "ChocolateScraper.pipelines.DuplicatesPipeline": 200,
+    "ChocolateScraper.pipelines.SavingToPostgreSQLPipeline": 300
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
